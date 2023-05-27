@@ -1,20 +1,22 @@
 import axios from "axios"
 import { useState } from "react"
 import { URL_Base } from "../URL"
+import { useNavigate } from "react-router-dom"
 
 export default function SignUp() {
     const [name, setName] = useState()
     const [email, setEmail] = useState()
     const [cpf, setCpf] = useState()
     const [foto, setFoto] = useState()
-    const [turma, setTurma] = useState()
+    const [turma, setTurma] = useState("T1")
+    const navigate = useNavigate()
 
     function register(e) {
         e.preventDefault()
         const obj = { name, email, cpf, foto, turma }
         axios.post(`${URL_Base}/signup`, obj)
-            .then(res => console.log(res.data))
-            .catch(err => console.log(err.response.data))
+            .then(() => navigate("/home"))
+            .catch(err => alert(err.response.data))
     }
 
     return (
