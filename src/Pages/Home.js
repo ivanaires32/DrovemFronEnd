@@ -1,21 +1,31 @@
 import axios from "axios"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { URL_Base } from "../URL"
 import { useNavigate } from "react-router-dom"
+import Context from "../Context/context"
 
 export function Home({ setDadosAluno }) {
-    const [idTurma, setIdTurma] = useState(1)
+    const [selectTurma, setSelectTurma] = useState()
+    const [selectProject, setSelectProject] = useState()
     const [alunos, setAlunos] = useState([])
+    const context = useContext(Context)
     const navigate = useNavigate()
 
     useEffect(() => {
-        axios.get(`${URL_Base}/turmas/${idTurma}`)
+        axios.get(`${URL_Base}/turmas`)
+            .then(res => context.setTurmasProjetos(res.data))
+            .catch(err => console.log(err.response.data))
+    }, [])
+
+    function turma(id_turma) {
+        setSelectTurma(id_turma)
+        axios.get(`${URL_Base}/turmas/${id_turma}`)
             .then(res => setAlunos(res.data))
             .catch(err => console.log(err.response.data.message))
-    }, [idTurma])
+    }
 
     function aluno(cpf_aluno) {
-        axios.get(`${URL_Base}/turmas/${idTurma}/${cpf_aluno}`)
+        axios.get(`${URL_Base}/turmas/${selectTurma}/${cpf_aluno}`)
             .then(res => {
                 setDadosAluno(res.data)
                 navigate("/aluno")
@@ -27,21 +37,33 @@ export function Home({ setDadosAluno }) {
         navigate("/entregar")
     }
 
+    function cadastrar() {
+        navigate("/signup")
+    }
+
+    function notas() {
+        navigate("/notas")
+    }
+
+    function projetos(name_project) {
+        setSelectProject(name_project)
+    }
+
     return (
         <>
             <div className="sidebar">
                 <nav>
                     <ul>
-                        <li><a onClick={() => setIdTurma(1)}>Turma 1</a></li>
-                        <li><a onClick={() => setIdTurma(2)}>Turma 2</a></li>
-                        <li><a onClick={() => setIdTurma(3)}>Turma 3</a></li>
-                        <li><a onClick={() => setIdTurma(4)}>Turma 4</a></li>
+                        {context.turmasProjetos.turmas.map(t => (
+                            <li><a onClick={() => turma(t.id)}>{`Turma ${t.id}`}</a></li>
+                        ))}
                     </ul>
                 </nav>
             </div>
 
             <div>
                 <nav>
+                    <h1>{selectTurma ? `Estudantes da Turma ${selectTurma}` : ""}</h1>
                     <ul>
                         {alunos.map((a) => (
                             <div key={a.id} onClick={() => aluno(a.cpf)}>
@@ -53,6 +75,8 @@ export function Home({ setDadosAluno }) {
                 </nav>
 
                 <button onClick={entregar}>Entregar Projeto</button>
+                <button onClick={cadastrar}>Cadastrar Aluno</button>
+                <button onClick={notas}>Ajustar Notas</button>
             </div>
         </>
     )
