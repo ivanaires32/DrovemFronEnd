@@ -44,24 +44,24 @@ export function Entregar() {
     }
 
     return (
-        <>
+        <Container>
             <Header>
                 <h1>Drovem</h1>
                 <a onClick={backHome}>voltar</a>
             </Header>
 
-            <div>
+            <Projeto>
 
                 <h1>Entrega de Projeto</h1>
 
-                <form onSubmit={entregarProjeto}>
+                <Form onSubmit={entregarProjeto}>
                     <label for="turmas">Selecione sua turma:</label> <br />
                     <select id="turmas" value={turmaSelect} onChange={e => setTurmaSelect(e.target.value)}>
                         <option value="" selected disabled>Selecionar...</option>
                         {context.turmasProjetos.turmas.map(t => (
                             <option key={t.id} value={`${t.id}`}>{t.name_turma}</option>
                         ))}
-                    </select><br />
+                    </select>
 
                     <label for="nome">Selecione seu nome:</label> <br />
                     <select id="nome" value={alunoSelect} onChange={e => setAlunoSelect(e.target.value)}>
@@ -69,7 +69,7 @@ export function Entregar() {
                         {infos.alunos.map(n => (
                             <option key={n.id} value={`${n.id}`}>{n.name}</option>
                         ))}
-                    </select><br />
+                    </select>
 
                     <label for="projeto">Selecione o projeto:</label> <br />
                     <select id="projeto" selected={projetoSelect} onChange={e => setProjetoSelect(e.target.value)}>
@@ -77,7 +77,7 @@ export function Entregar() {
                         {infos.projetos.map(p => (
                             <option key={p.id} value={`${p.id}`}>{p.name_project}</option>
                         ))}
-                    </select><br />
+                    </select>
 
                     <label for="link">Link do projeto</label><br />
                     <input type="text" id="link" value={linkProject} onChange={e => setLinkProject(e.target.value)} />
@@ -85,11 +85,26 @@ export function Entregar() {
 
                     <button>Entregar</button>
 
-                </form>
-            </div>
-        </>
+                </Form>
+            </Projeto>
+        </Container>
     )
 }
+
+const Container = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`
+
+const Projeto = styled.div`
+    margin: 0 auto;
+    h1{
+        margin-top: 150px;
+        font-size: 30px;
+        font-weight: bold;
+    }
+`
 
 const Header = styled.div`
     position: fixed;
@@ -111,5 +126,48 @@ const Header = styled.div`
     a{
         font-size: 30px;
         font-weight: 700;
+    }
+`
+
+const Form = styled.form`
+    background-color: #4b83b8;
+    border-radius: 5px;
+    padding: 2%;
+    width: 500px;
+    height: 500px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    h1{
+        text-align: center;
+        font-size: 25px;
+        font-weight:400;
+        margin-bottom: 10px;
+    }
+
+    select{
+        height: 35px;
+        border-radius: 10px;
+        padding-left: 2%;
+        font-size: 20px;
+        margin: 10px 0 40px 0;
+        border: 0;
+        outline: 0;
+    }
+    button{
+        height: 50px;
+        border-radius: 10px;
+        border: 0;
+        font-size: 22px;
+    }
+    input{
+        height: 35px;
+        border-radius: 10px;
+        border: 0;
+        outline: 0;
+        padding-left: 2%;
     }
 `
