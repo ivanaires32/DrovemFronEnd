@@ -75,71 +75,98 @@ export function Home({ setDadosAluno }) {
 
     return (
         <Container>
-            <Sidebar>
-                <nav>
-                    <ul>
-                        {context.turmasProjetos.turmas.map(t => (
-                            <Li selec={selectTurma === t.id ? "#120a8f" : ""}><a onClick={() => turma(t.id)}>{`Turma ${t.id}`}</a></Li>
-                        ))}
-                    </ul>
-                </nav>
-
-                <Buttons>
-                    <button onClick={entregar}>Entregar Projeto</button>
-                    <button onClick={cadastrar}>Cadastrar Aluno</button>
-                    <button onClick={notas}>Ajustar Notas</button>
-                    <button onClick={transferir}>Transferir Aluno</button>
-                </Buttons>
-            </Sidebar>
-
-
-            <Alunos>
-                <nav>
-                    <h1>{selectTurma ? `Estudantes da Turma ${selectTurma}` : "Selecione a Turma"}</h1>
-                    <ul>
-                        {alunos.map((a) => (
-                            <div key={a.id} onClick={() => aluno(a.cpf)}>
-                                <img src="https://revistacipa.com.br/wp-content/uploads/2021/04/logo-social.png" />
-                                <h3>{a.name}</h3>
-                            </div>
-                        ))}
-                    </ul>
-                </nav>
-            </Alunos>
-
-            <Overlay display={display}>
-                <Transferir display={display}>
-                    <Exit>
-                        <h2 onClick={backHome}>X</h2>
-                    </Exit>
-
-                    <h1>Escolha o aluno e a turma de destino</h1>
-                    <form onSubmit={confirmTranferencia}>
-
-                        <label for="nome">Selecione o nome do aluno:</label> <br />
-                        <select id="nome" value={id_aluno} onChange={e => setIdAluno(e.target.value)}>
-                            <option value="" selected disabled>Selecionar...</option>
-                            {allAlunos.map(a => (
-                                <option key={a.id} value={`${a.id}`}>{a.name}</option>
-                            ))}
-                        </select><br />
-
-                        <label for="turmas">Selecione a turma de destino:</label> <br />
-                        <select id="turmas" value={id_turma} onChange={e => setIdTurma(e.target.value)}>
-                            <option value="" selected disabled>Selecionar...</option>
+            <Header>
+                <h1>Drovem</h1>
+            </Header>
+            <Page>
+                <Sidebar>
+                    <nav>
+                        <ul>
                             {context.turmasProjetos.turmas.map(t => (
-                                <option key={t.id} value={`${t.id}`}>{t.name_turma}</option>
+                                <Li selec={selectTurma === t.id ? "#120a8f" : ""}><a onClick={() => turma(t.id)}>{`Turma ${t.id}`}</a></Li>
                             ))}
-                        </select><br />
+                        </ul>
+                    </nav>
 
-                        <button>Confimar Transferencia</button>
-                    </form>
-                </Transferir>
-            </Overlay>
+                    <Buttons>
+                        <button onClick={entregar}>Entregar Projeto</button>
+                        <button onClick={cadastrar}>Cadastrar Aluno</button>
+                        <button onClick={notas}>Ajustar Notas</button>
+                        <button onClick={transferir}>Transferir Aluno</button>
+                    </Buttons>
+                </Sidebar>
 
-        </Container >
+
+                <Alunos>
+                    <nav>
+                        <h1>{selectTurma ? `Estudantes da Turma ${selectTurma}` : "Selecione a Turma"}</h1>
+                        <ul>
+                            {alunos.map((a) => (
+                                <div key={a.id} onClick={() => aluno(a.cpf)}>
+                                    <img src="https://revistacipa.com.br/wp-content/uploads/2021/04/logo-social.png" />
+                                    <h3>{a.name}</h3>
+                                </div>
+                            ))}
+                        </ul>
+                    </nav>
+                </Alunos>
+
+                <Overlay display={display}>
+                    <Transferir display={display}>
+                        <Exit>
+                            <h2 onClick={backHome}>X</h2>
+                        </Exit>
+
+                        <h1>Escolha o aluno e a turma de destino</h1>
+                        <form onSubmit={confirmTranferencia}>
+
+                            <label for="nome">Selecione o nome do aluno:</label> <br />
+                            <select id="nome" value={id_aluno} onChange={e => setIdAluno(e.target.value)}>
+                                <option value="" selected disabled>Selecionar...</option>
+                                {allAlunos.map(a => (
+                                    <option key={a.id} value={`${a.id}`}>{a.name}</option>
+                                ))}
+                            </select><br />
+
+                            <label for="turmas">Selecione a turma de destino:</label> <br />
+                            <select id="turmas" value={id_turma} onChange={e => setIdTurma(e.target.value)}>
+                                <option value="" selected disabled>Selecionar...</option>
+                                {context.turmasProjetos.turmas.map(t => (
+                                    <option key={t.id} value={`${t.id}`}>{t.name_turma}</option>
+                                ))}
+                            </select><br />
+
+                            <button>Confimar Transferencia</button>
+                        </form>
+                    </Transferir>
+                </Overlay>
+
+            </Page>
+        </Container>
     )
 }
+
+const Container = styled.div`
+    width: 100%;
+`
+
+const Header = styled.div`
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    width: 95.88%;
+    background-color: #FFFFFF;
+    height: 69px;
+    border: 1px solid #000000;
+    display: flex;
+    padding: 0 2%;
+    align-items: center;
+    h1{
+        font-size: 30px;
+        font-weight: 700;
+    }
+`
 
 const Exit = styled.div`
     width: 96%;
@@ -155,6 +182,9 @@ const Exit = styled.div`
 const Overlay = styled.div`
     background-color: rgba(230, 230, 230, 0.8);
     position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 6;
     display: ${props => props.display};
     width: 100%;
     height: 100%;
@@ -184,8 +214,9 @@ const Transferir = styled.div`
     }
 `
 
-const Container = styled.div`
+const Page = styled.div`
     display: flex;
+    width: 100%;
 `
 
 const Alunos = styled.div`
@@ -238,7 +269,8 @@ const Alunos = styled.div`
 const Sidebar = styled.div`
     background-color: #FFFFFF;
     width: 300px;
-    height: 100%;
+    height: calc(100% - 70px);
+    margin-top: 70px;
     position: fixed;
     left: 0;
     top: 0;

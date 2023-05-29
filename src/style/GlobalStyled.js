@@ -9,6 +9,9 @@ const GlobalStyle = createGlobalStyle`
     body{
         background-color: #ccc;
     }
+    a, button{
+        cursor: pointer;
+    }
 `
 
 export default GlobalStyle
