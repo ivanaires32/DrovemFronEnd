@@ -8,6 +8,10 @@ import styled from "styled-components"
 export function Home({ setDadosAluno }) {
     const [selectTurma, setSelectTurma] = useState()
     const [alunos, setAlunos] = useState([])
+    const [id_turma, setIdTurma] = useState()
+    const [id_aluno, setIdAluno] = useState()
+    const [allAlunos, setAllAlunos] = useState([])
+    const [display, setDisplay] = useState("none")
     const context = useContext(Context)
     const navigate = useNavigate()
 
@@ -31,6 +35,30 @@ export function Home({ setDadosAluno }) {
                 navigate("/aluno")
             })
             .catch(err => alert(err.response.data.message))
+    }
+
+    function transferir() {
+        setDisplay("flex")
+        axios.get(`${URL_Base}/alunos`)
+            .then(res => {
+                setAllAlunos(res.data)
+            })
+            .catch(err => alert(err.response.data.message))
+    }
+
+    function confirmTranferencia(e) {
+        e.preventDefault()
+        const obj = { id_aluno, id_turma }
+        axios.post(`${URL_Base}/transferir`, obj)
+            .then(() => {
+                alert("Aluno Transferido")
+                setDisplay("none")
+            })
+            .catch(err => console.log(err.response.data.message))
+    }
+
+    function backHome() {
+        setDisplay("none")
     }
 
     function entregar() {
@@ -60,6 +88,7 @@ export function Home({ setDadosAluno }) {
                     <button onClick={entregar}>Entregar Projeto</button>
                     <button onClick={cadastrar}>Cadastrar Aluno</button>
                     <button onClick={notas}>Ajustar Notas</button>
+                    <button onClick={transferir}>Transferir Aluno</button>
                 </Buttons>
             </Sidebar>
 
@@ -78,9 +107,82 @@ export function Home({ setDadosAluno }) {
                 </nav>
             </Alunos>
 
-        </Container>
+            <Overlay display={display}>
+                <Transferir display={display}>
+                    <Exit>
+                        <h2 onClick={backHome}>X</h2>
+                    </Exit>
+
+                    <h1>Escolha o aluno e a turma de destino</h1>
+                    <form onSubmit={confirmTranferencia}>
+
+                        <label for="nome">Selecione o nome do aluno:</label> <br />
+                        <select id="nome" value={id_aluno} onChange={e => setIdAluno(e.target.value)}>
+                            <option value="" selected disabled>Selecionar...</option>
+                            {allAlunos.map(a => (
+                                <option key={a.id} value={`${a.id}`}>{a.name}</option>
+                            ))}
+                        </select><br />
+
+                        <label for="turmas">Selecione a turma de destino:</label> <br />
+                        <select id="turmas" value={id_turma} onChange={e => setIdTurma(e.target.value)}>
+                            <option value="" selected disabled>Selecionar...</option>
+                            {context.turmasProjetos.turmas.map(t => (
+                                <option key={t.id} value={`${t.id}`}>{t.name_turma}</option>
+                            ))}
+                        </select><br />
+
+                        <button>Confimar Transferencia</button>
+                    </form>
+                </Transferir>
+            </Overlay>
+
+        </Container >
     )
 }
+
+const Exit = styled.div`
+    width: 96%;
+    text-align: right;
+    margin-right: 4%;
+    h2{
+        cursor: pointer;
+        font-size: 23px;
+        font-weight: bold;
+    }
+`
+
+const Overlay = styled.div`
+    background-color: rgba(230, 230, 230, 0.8);
+    position: absolute;
+    display: ${props => props.display};
+    width: 100%;
+    height: 100%;
+`
+
+const Transferir = styled.div`
+    display: ${props => props.display};
+    background-color: white;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    position: fixed;
+    z-index: 3;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 300px;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    form{
+        display: flex;
+        flex-direction: column;
+        button{
+            cursor: pointer;
+        }
+    }
+`
 
 const Container = styled.div`
     display: flex;
@@ -140,7 +242,6 @@ const Sidebar = styled.div`
     position: fixed;
     left: 0;
     top: 0;
-    z-index: 2;
     border: 1px solid #000000;
     display: flex;
     flex-direction: column;
